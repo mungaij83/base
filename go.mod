@@ -1,6 +1,6 @@
 module github.com/hexya-addons/base
 
-go 1.13
+go 1.18
 
 require (
 	github.com/google/uuid v1.1.1
@@ -13,4 +13,5 @@ require (
 )
 
 
-replace github.com/hexya-erp/hexya v0.1.7 => ../../hexya-erp/hexya/
+replace github.com/hexya-erp/hexya v0.1.7 => ../../hexya/
+replace github.com/hexya-addons/web v0.1.7 => ../../hexya-addons/web/

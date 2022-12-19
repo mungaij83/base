@@ -1,8 +1,11 @@
 package models
 
-import "github.com/hexya-erp/hexya/src/models/loader"
+import (
+	"github.com/hexya-erp/hexya/src/models/loader"
+)
 
 type AttachmentModel struct {
+	loader.Model
 	Name         string       `hexya:"display_name=Attachment Name;required"`
 	Description  string       `hexya:"type=text"`
 	ResName      string       `hexya:"display_name=Resource Name;type=compute;stored;depends=ResModel;ResID"`
@@ -16,14 +19,14 @@ type AttachmentModel struct {
 	AccessToken  string       `hexya:"size=512"`
 	Datas        []byte       `hexya:"display_name=File Content;depends=StoreFname,DBDatas;type=compute"`
 	DBDatas      string       `hexya:"display_name=Database Data"`
-	StoreFname   string       `hexya:"display_name=tored Filename"`
+	StoreFname   string       `hexya:"display_name=Stored Filename"`
 	FileSize     int          `hexya:"goType=int"`
 	CheckSum     string       `hexya:"display_name=Checksum/SHA1;size=40;index;readOnly"`
-	MimeType     string       `hexya:"readOnlt"`
+	MimeType     string       `hexya:"readOnly"`
 	IndexContent string       `hexya:"type=text;readOnly;display_name=Indexed Content"`
 }
 
-
 func InitAttachments() {
-	loader.NewTypedModel(AttachmentModel{})
+	attachment := loader.NewTypedModel(AttachmentModel{})
+	definer := loader.NewModelSet[loader.Model{}](attachment)
 }
