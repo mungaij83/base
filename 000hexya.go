@@ -16,10 +16,10 @@ package base
 
 import (
 	"github.com/hexya-erp/hexya/src/models"
+	data "github.com/hexya-addons/base/models"
 	"github.com/hexya-erp/hexya/src/models/security"
 	"github.com/hexya-erp/hexya/src/server"
 	"github.com/hexya-erp/hexya/src/tools/logging"
-	"github.com/hexya-erp/pool/h"
 )
 
 const (
@@ -29,13 +29,33 @@ const (
 
 var log logging.Logger
 
+// Call each model to register and initialize in registry
+func initModels() {
+	log.Info("Loading settings..", MODULE_NAME)
+	data.InitSettings()
+	log.Info("Loading attachments..", MODULE_NAME)
+	data.InitAttachments()
+	log.Info("Loading bank information..", MODULE_NAME)
+	data.InitBank()
+	log.Info("Loading lang and translations..", MODULE_NAME)
+	data.InitTranslations()
+	log.Info("Loading sequences..", MODULE_NAME)
+	data.InitSequences()
+	log.Info("Loading jobs and queue channels..", MODULE_NAME)
+	data.InitJobQueues()
+	log.Info("Loading users..", MODULE_NAME)
+	data.InitUsers()
+	log.Info("Loaded..", MODULE_NAME)
+}
+
 func init() {
 	log = logging.GetLogger("base")
 	server.RegisterModule(&server.Module{
-		Name: MODULE_NAME,
+		Name:    MODULE_NAME,
+		PreInit: initModels,
 		PostInit: func() {
 			err := models.ExecuteInNewEnvironment(security.SuperUserID, func(env models.Environment) {
-				h.Group().NewSet(env).ReloadGroups()
+				//h.Group().NewSet(env).ReloadGroups()
 			})
 			if err != nil {
 				log.Panic("Error while initializing", "error", err)

@@ -1,0 +1,25 @@
+package models
+
+type CompanyModel struct {
+	Name            string            //: fields.Char{String: "Company Name", Size: 128, Required: true, Related: "Partner.Name", Unique: true},
+	Sequence        int64             //: fields.Integer{Default: models.DefaultValue(10), Help: "Used to order Companies in the company switcher"},
+	Parent          *CompanyModel     //": fields.Many2One{RelationModel: h.Company(), String: "Parent Company", Index: true, Constraint: h.Company().Methods().CheckParent()},
+	Children        []CompanyModel    //": fields.One2Many{RelationModel: h.Company(), ReverseFK: "Parent", String: "Child Companies"},
+	Partner         PartnerModel      //": fields.Many2One{RelationModel: h.Partner(),Required: true, Index: true},
+	Logo            []byte            //: fields.Binary{Related: "Partner.Image"},
+	LogoWeb         []byte            //": fields.Binary{Compute: h.Company().Methods().ComputeLogoWeb(), Stored: true, Depends: []string{"Partner", "Partner.Image"}},
+	Currency        CurrencyModel     //": fields.Many2One{RelationModel: h.Currency(), Required: true, Default: CompanyGetUserCurrency},
+	Users           []UserModel       // ":   fields.Many2Many{RelationModel: h.User(), String: "Accepted Users"},
+	Street          string            //:  fields.Char{Related: "Partner.Street"},
+	Street2         string            //": fields.Char{Related: "Partner.Street2"},
+	Zip             string            //":     fields.Char{Related: "Partner.Zip"},
+	City            string            //":    fields.Char{Related: "Partner.City"},
+	State           CountryStateModel //": fields.Many2One{RelationModel: h.CountryState(), Related: "Partner.State", OnChange: h.Company().Methods().OnChangeState()},
+	Country         *CountryModel      //": fields.Many2One{RelationModel: h.Country(), Related: "Partner.Country", OnChange: h.Company().Methods().OnChangeCountry()},
+	Email           string            //":           fields.Char{Related: "Partner.Email"},
+	Phone           string            //":           fields.Char{Related: "Partner.Phone"},
+	Website         string            //fields.Char{Related: "Partner.Website"},
+	VAT             string            //             fields.Char{Related: "Partner.VAT"},
+	CompanyRegistry string            // fields.Char{Size: 64},
+	Favicon         []byte            //: fields.Binary{String: "Company Favicon", Default: func(env models.Environment) interface{} { fileName := filepath.Join(server.ResourceDir, "static", "web", "src", "img", "favicon.ico") imgData, _ := ioutil.ReadFile(fileName) return base64.StdEncoding.EncodeToString(imgData)}, Help: `This field holds the image used to display a favicon for a given company.`},
+}
